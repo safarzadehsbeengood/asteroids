@@ -12,6 +12,11 @@ function Asteroid(x, y, r) {
         push();
         translate(this.pos.x, this.pos.y);
         stroke(255);
+        // if (this.r > 25) {
+        //     fill(0, 255, 0);
+        // } if (this.r > 10 && this.r <= 25) {
+        //     fill(200, 0, 0);
+        // }
         fill(100);
         // ellipse(0, 0, this.r * 2);
         beginShape();
@@ -31,12 +36,18 @@ function Asteroid(x, y, r) {
         } else if (this.pos.x < -this.r) {
             this.pos.x = width + this.r
         }
-
         if (this.pos.y > height + this.r) {
             this.pos.y = -this.r
         } else if (this.pos.y < -this.r) {
             this.pos.y = height + this.r;
         }
+    }
+
+    this.breakup = function(){
+        let newAsts = [];
+        newAsts.push(new Asteroid(this.pos.x, this.pos.y, this.r/2));
+        newAsts.push(new Asteroid(this.pos.x, this.pos.y, this.r/2));
+        return newAsts;
     }
 
     this.update = function() {

@@ -1,8 +1,10 @@
 var cnv;
 var ship;
+let score = 0;
 var asteroids = [];
 var shots = [];
 var numAsteroids = 10;
+let frames = 0;
 var rotation = 0.1;
 var maxSpeed = 6;
 function setup() {
@@ -17,11 +19,18 @@ function setup() {
 function keyPressed() {
     if (keyIsDown(32)) {
         shots.push(new Shot(p5.Vector.fromAngle(ship.heading), ship.pos.x, ship.pos.y));
-        console.log(shots);
     }
 }
 
 function draw() {
+  if (frames >= 600) {
+    console.log(shots);
+    frames = 0;
+  }
+  if (frames == 300) {
+    asteroids.push(new Asteroid(random(width), 0, random(30, 50)));
+  }
+ 
   background(0);
   checkTurn();
   ship.checkBounds();
@@ -34,11 +43,35 @@ function draw() {
     asteroids[i].update();
   }
 
+  let shotsToRemove = [];
   for (let i = 0; i < shots.length; i++) {
     shots[i].render();
     shots[i].update();
+    for (let j = asteroids.length-1; j >= 0; j--) {
+      if (shots[i].hits(asteroids[j])) {
+        shotsToRemove.push(i);
+        if (asteroids[j].r < 30) {
+          asteroids.splice(j, 1);
+          score += 25;
+          continue;
+        }
+        var newAsteroids = asteroids[j].breakup();
+        if (newAsteroids) {
+          asteroids.push(newAsteroids[0]);
+          asteroids.push(newAsteroids[1]); 
+        }
+        asteroids.splice(j, 1);
+      }
+    }
   }
-
+  for (shot of shotsToRemove) {
+    shots.pop(shot);
+  }
+  stroke(255);
+  fill(255);
+  textSize(16);
+  text(score, 10, height/2);
+  frames++;
 }
 
 window.onresize = () => {

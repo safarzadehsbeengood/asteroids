@@ -14,4 +14,12 @@ function Shot(vel, x, y) {
         point(this.pos.x, this.pos.y);
         pop();
     }
+    this.hits = function(asteroid) {
+        let d = dist(this.pos.x, this.pos.y, asteroid.pos.x, asteroid.pos.y);
+        if (d < asteroid.r) {
+            console.log("HIT");
+            return true;
+        }
+        return false;
+    }
 }
