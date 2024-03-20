@@ -47,9 +47,14 @@ function draw() {
   for (let i = 0; i < shots.length; i++) {
     shots[i].render();
     shots[i].update();
+    if (shots[i].pos.x > width || shots[i].pos.x < 0 || shots[i].pos.y > height || shots[i].pos.y < 0) {
+      shotsToRemove.push(i);
+    }
     for (let j = asteroids.length-1; j >= 0; j--) {
       if (shots[i].hits(asteroids[j])) {
-        shotsToRemove.push(i);
+        if (!shotsToRemove.includes(i)) {
+          shotsToRemove.push(i);
+        }
         if (asteroids[j].r < 30) {
           asteroids.splice(j, 1);
           score += 25;
