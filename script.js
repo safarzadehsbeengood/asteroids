@@ -44,21 +44,19 @@ function draw() {
   }
 
   let shotsToRemove = [];
-  for (let i = 0; i < shots.length; i++) {
+  for (let i = shots.length-1; i >= 0; i--) {
     shots[i].render();
     shots[i].update();
-    if (shots[i].pos.x > width || shots[i].pos.x < 0 || shots[i].pos.y > height || shots[i].pos.y < 0) {
-      shotsToRemove.push(i);
-    }
+    if (shots[i].offscreen()) {
+      shots.splice(i, 1);
+    } else {
     for (let j = asteroids.length-1; j >= 0; j--) {
       if (shots[i].hits(asteroids[j])) {
-        if (!shotsToRemove.includes(i)) {
-          shotsToRemove.push(i);
-        }
         if (asteroids[j].r < 30) {
           asteroids.splice(j, 1);
           score += 25;
-          continue;
+          shots.splice(i, 1);
+          break;
         }
         var newAsteroids = asteroids[j].breakup();
         if (newAsteroids) {
@@ -66,12 +64,13 @@ function draw() {
           asteroids.push(newAsteroids[1]); 
         }
         asteroids.splice(j, 1);
+        shots.splice(i, 1);
+        break;
       }
     }
   }
-  for (shot of shotsToRemove) {
-    shots.pop(shot);
   }
+  // shotsToRemove.pop()
   stroke(255);
   fill(255);
   textSize(16);
