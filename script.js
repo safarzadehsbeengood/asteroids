@@ -43,7 +43,6 @@ function draw() {
     asteroids[i].update();
   }
 
-  let shotsToRemove = [];
   for (let i = shots.length-1; i >= 0; i--) {
     shots[i].render();
     shots[i].update();
